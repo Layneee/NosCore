@@ -197,7 +197,7 @@ namespace NosCore.GameObject
             return 0;
         }
 
-        public void GenerateFinit()
+        public FinitPacket GenerateFinit()
         {
             var subpackets = new List<FinitSubPacket>();
             foreach (CharacterRelationDTO relation in CharacterRelations.Where(s => s.RelationType == CharacterRelationType.Friend || s.RelationType == CharacterRelationType.Spouse))
@@ -223,10 +223,7 @@ namespace NosCore.GameObject
                 });
             }
 
-            Session.SendPacket(new FinitPacket
-            {
-                SubPackets = subpackets
-            });
+            return new FinitPacket { SubPackets = subpackets };
         }
 
         public void AddRelation(long characterId, CharacterRelationType relationType)
@@ -240,7 +237,7 @@ namespace NosCore.GameObject
 
             DAOFactory.CharacterRelationDAO.InsertOrUpdate(ref relation);
             ServerManager.Instance.RefreshRelations(relation.CharacterRelationId);
-            GenerateFinit();
+            Session.SendPacket(GenerateFinit());
         }
 
         public bool IsBlockedByCharacter(long characterId)

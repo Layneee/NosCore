@@ -10,6 +10,7 @@ using NosCore.Data.StaticEntities;
 using NosCore.Data.WebApi;
 using NosCore.Database.Entities;
 using NosCore.DAL;
+using NosCore.Shared.Enumerations.Interaction;
 using NosCore.Shared.Enumerations.Map;
 using NosCore.Shared.I18N;
 
