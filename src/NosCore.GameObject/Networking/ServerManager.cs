@@ -25,8 +25,6 @@ namespace NosCore.GameObject.Networking
 
         private static readonly List<Map.Map> Maps = new List<Map.Map>();
 
-        public ConcurrentDictionary<long, CharacterRelationDTO> CharacterRelations { get; set; }
-
         private ServerManager()
         {
         }
@@ -63,7 +61,6 @@ namespace NosCore.GameObject.Networking
             // parse rates
             try
             {
-                CharacterRelations = new ConcurrentDictionary<long, CharacterRelationDTO>();
                 var i = 0;
                 var monstercount = 0;
                 var npccount = 0;
