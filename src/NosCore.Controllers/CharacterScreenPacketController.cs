@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using NosCore.Core;
 using NosCore.Core.Encryption;
 using NosCore.Core.Networking;
@@ -314,6 +316,14 @@ namespace NosCore.Controllers
                 {
                     Session.Character.Mp = (int) Session.Character.MPLoad();
                 }
+
+                var characterRelationPartitioner = Partitioner.Create(DAOFactory.CharacterRelationDAO.Where(s => s.CharacterId == Session.Character.CharacterId || s.RelatedCharacterId == Session.Character.CharacterId).Cast<CharacterRelation>(), EnumerablePartitionerOptions.NoBuffering);
+
+                Parallel.ForEach(characterRelationPartitioner, relation =>
+                {
+                    relation.CharacterName = DAOFactory.CharacterDAO.FirstOrDefault(s => s.CharacterId == relation.RelatedCharacterId)?.Name;
+                    Session.Character.CharacterRelations[relation.CharacterRelationId] = relation;
+                });
 
                 Session.SendPacket(new OkPacket());
             }
