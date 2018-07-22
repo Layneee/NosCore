@@ -26,8 +26,8 @@ namespace NosCore.GameObject.Networking
             if (!session.HasSelectedCharacter)
             {
                 return;
-            }      
-            _sessions[session.Character.CharacterId] = session;
+            }
+            Sessions[session.Character.CharacterId] = session;
             if (session.HasCurrentMapInstance)
             {
                 session.Character.MapInstance.IsSleeping = false;
@@ -42,25 +42,18 @@ namespace NosCore.GameObject.Networking
                 return;
             }
             // Remove client from online clients list
-            if (!_sessions.TryRemove(session.Character.CharacterId, out _))
+            if (!Sessions.TryRemove(session.Character.CharacterId, out _))
             {
                 return;
             }
-            if (session.HasCurrentMapInstance && _sessions.Count == 0)
+            if (session.HasCurrentMapInstance && Sessions.Count == 0)
             {
                 session.Character.MapInstance.IsSleeping = true;
             }
             LastUnregister = DateTime.Now;
         }
 
-        private readonly ConcurrentDictionary<long, ClientSession> _sessions;
-        public List<ClientSession> Sessions
-        {
-            get
-            {
-                return _sessions.Select(s => s.Value).Where(s => s.HasSelectedCharacter).ToList();
-            }
-        }
+        public ConcurrentDictionary<long, ClientSession> Sessions { get; set; }
 
         protected DateTime LastUnregister { get; private set; }
 
@@ -68,7 +61,7 @@ namespace NosCore.GameObject.Networking
         protected BroadcastableBase()
         {
             LastUnregister = DateTime.Now.AddMinutes(-1);
-            _sessions = new ConcurrentDictionary<long, ClientSession>();
+            Sessions = new ConcurrentDictionary<long, ClientSession>();
         }
 
         public void Broadcast(PacketDefinition packet)
@@ -131,7 +124,7 @@ namespace NosCore.GameObject.Networking
                     break;
                 case ReceiverType.AllExceptMe:
                     Parallel.ForEach(
-                        Sessions.Where(s => s.Character.CharacterId != sentPacket.Sender.Character.CharacterId),
+                        Sessions.Values.Where(s => s.Character.CharacterId != sentPacket.Sender.Character.CharacterId),
                         session =>
                         {
                             if (!session.HasSelectedCharacter)
@@ -150,12 +143,12 @@ namespace NosCore.GameObject.Networking
                 case ReceiverType.All:
                     Parallel.ForEach(Sessions, session =>
                     {
-                        if (!session.HasSelectedCharacter)
+                        if (!session.Value.HasSelectedCharacter)
                         {
                             return;
                         }
 
-                        session.SendPacket(sentPacket.Packet);
+                        session.Value.SendPacket(sentPacket.Packet);
                     });
                     break;
             }
