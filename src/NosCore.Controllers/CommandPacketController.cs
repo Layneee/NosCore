@@ -38,7 +38,7 @@ namespace NosCore.Controllers
             var sayPostedPacket = new PostedPacket
             {
                 Packet = PacketFactory.Serialize(sayPacket),
-                SenderCharacterData = new CharacterData
+                SenderCharacter = new CharacterData
                 {
                     CharacterName = Session.Character.Name,
                     CharacterId = Session.Character.CharacterId
