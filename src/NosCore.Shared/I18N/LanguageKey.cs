@@ -108,6 +108,7 @@ namespace NosCore.Shared.I18N
         FRIEND_REJECTED,
         CANT_BLOCK_FRIEND,
         NOT_IN_BLACKLIST,
-        BLACKLIST_ADDED
+        BLACKLIST_ADDED,
+        CHARACTER_ONLINE
     }
 }
