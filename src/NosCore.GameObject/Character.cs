@@ -307,7 +307,6 @@ namespace NosCore.GameObject
                 return;
             }
 
-            DAOFactory.CharacterRelationDAO.InsertOrUpdate(ref relation);
             Session.SendPacket(GenerateFinit());
         }
 
